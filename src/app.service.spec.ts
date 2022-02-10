@@ -21,10 +21,10 @@ describe('AppService', () => {
     //then
     expect(item.value).toEqual({ id: key, value: 'foo' });
 
-    const optinal = item.map<number>((item) => item?.id);
+    const optinal = item.map<number>((item) => item.id);
     expect(optinal.value).toBe(key);
 
-    const id = item.flat<number>((item) => item?.id);
+    const id = item.flat<number>((item) => item.id);
     expect(id).toBe(key);
   });
 
@@ -35,13 +35,13 @@ describe('AppService', () => {
     //when
     const item = appService.findOne(key);
 
-    //then
+    // //then
     expect(item.value).toBeUndefined();
 
-    const optinal = item.map<number>((item) => item?.id);
+    const optinal = item.map<number>((item) => item.id);
     expect(optinal.value).toBeUndefined();
 
-    const id = item.flat<number>((item) => item?.id);
+    const id = item.flat<number>((item) => item.id);
     expect(id).toBeUndefined();
   });
 });

@@ -8,21 +8,28 @@ interface Item {
 }
 
 interface Container<T> {
-  map: <R>(fn: (value: T | null) => R) => Container<R>;
-  flat: <R>(fn: (value: T | null) => R) => R | null;
-  get value(): T | null;
+  map: <R>(fn: (value: T) => R) => Container<R>;
+  flat: <R>(fn: (value: T) => R) => R | undefined;
+  get value(): T | undefined;
 }
 
-class SingleContainer<T> implements Container<T> {
+class Option<T> implements Container<T> {
   constructor(private item: T) {}
 
-  map<R>(fn: (value: T | null) => R): SingleContainer<R> {
-    const value = fn(this.value);
-    return new SingleContainer<R>(value);
+  map<R>(fn: (value: T) => R): Option<R> {
+    if (!this.value) {
+      return new Option<R>(undefined);
+    } else {
+      return new Option<R>(fn(this.value));
+    }
   }
 
-  flat<R>(fn: (value: T | null) => R | null): R {
-    return fn(this.value);
+  flat<R>(fn: (value: T) => R): R | undefined {
+    if (!this.value) {
+      return undefined;
+    } else {
+      return fn(this.value);
+    }
   }
 
   get value(): T | null {
@@ -43,8 +50,8 @@ export class AppService {
     items.forEach((item) => this.itemSet.set(item.id, item));
   }
 
-  findOne(id: number): SingleContainer<Item> {
+  findOne(id: number): Option<Item> {
     const data = this.itemSet.get(id);
-    return new SingleContainer<Item>(data);
+    return new Option<Item>(data);
   }
 }
